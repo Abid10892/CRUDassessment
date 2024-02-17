@@ -1,14 +1,15 @@
 import styles from "../styles/Home.module.css";
-import TodoForm from "@/components/TodoForm";
 import ImageSection from "@/components/ImageSection";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import EditTodo from "@/components/EditTodo";
 import Todos from "@/components/Todos";
 import axios from "axios";
 import Link from "next/link";
+import { CountContext } from "@/context/context";
 
 export default function Viewtodo() {
   const [isEditing, setIsEditing] = useState(false);
+  const { count, setCount } = useContext(CountContext);
 
   useEffect(() => {
     fetch();
@@ -20,6 +21,7 @@ export default function Viewtodo() {
       const response = await axios.get("/api/gettodos");
       let result = await response.data.todo;
       setResult(result);
+      setCount((count) => count + 1);
     } catch (error) {
       console.log(error);
     }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import HashLoader from "react-spinners/HashLoader.js";
 import axios from "axios";
 import { Bounce, ToastContainer, toast } from "react-toastify";
@@ -6,10 +6,11 @@ import { useForm } from "react-hook-form";
 import styles from "./page.module.css";
 import Link from "next/link";
 import "react-toastify/dist/ReactToastify.css";
+import { CountContext } from "@/context/context";
 
 export default function TodoForm({ setIsEditing }) {
   const [loading, setLoading] = useState(false);
-
+  const { count, setCount } = useContext(CountContext);
   const {
     register,
     reset,
@@ -21,7 +22,7 @@ export default function TodoForm({ setIsEditing }) {
     },
   });
 
-  const handleSubmits = async (data) => {
+  const onSubmit = async (data) => {
     setLoading(true);
     try {
       const response = await axios.post("/api/addtodo", data);
@@ -29,6 +30,7 @@ export default function TodoForm({ setIsEditing }) {
       if (response.status === 200) {
         reset();
         toast.success("Added Successfully");
+        setCount((count) => count + 1);
         setLoading(false);
       }
     } catch (error) {
@@ -54,6 +56,9 @@ export default function TodoForm({ setIsEditing }) {
       />
 
       <div className={styles.box}>
+        <h3 style={{ textAlign: "center", color: "green" }}>
+          {count} Times API called
+        </h3>
         <Link href={"/viewtodo"}>
           <button className={styles.signInBtn}>VIEW TODO'S</button>
         </Link>
@@ -69,7 +74,7 @@ export default function TodoForm({ setIsEditing }) {
             Get onto your most comfortable journey yet. All the way up.
           </h5>
         </div>
-        <form onSubmit={handleSubmit(handleSubmits)} noValidate>
+        <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <input
             type="text"
             placeholder="Type here..."

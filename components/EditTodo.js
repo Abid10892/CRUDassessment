@@ -1,15 +1,16 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import HashLoader from "react-spinners/HashLoader.js";
 import axios from "axios";
 import { toast, ToastContainer, Bounce } from "react-toastify";
 import { useForm } from "react-hook-form";
 import styles from "./page.module.css";
-import { useRouter } from "next/router";
 import "react-toastify/dist/ReactToastify.css";
+import { CountContext } from "@/context/context";
 
 export default function EditTodo({ editForm, setIsEditing }) {
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const { count, setCount } = useContext(CountContext);
+
   const {
     register,
     reset,
@@ -30,6 +31,7 @@ export default function EditTodo({ editForm, setIsEditing }) {
         id: id,
       });
       toast.success("Updated Successfully");
+      setCount((count) => count + 1);
       setTimeout(() => {
         setIsEditing(false);
       }, 1000);
